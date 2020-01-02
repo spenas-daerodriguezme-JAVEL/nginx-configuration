@@ -17,9 +17,12 @@ services:
     networks: 
       - backend
 
-  mongo:
+  db:
     image: mongo
-    container_name: mongo
+    container_name: db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=spenas
+      - MONGO_INITDB_ROOT_PASSWORD=casa
     ports:
       - "27017:27017"
     networks:
