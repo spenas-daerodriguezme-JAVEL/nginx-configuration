@@ -22,7 +22,7 @@ services:
     ports:
       — "27017:27017"
 
- webserver:
+  webserver:
     image: nginx:mainline-alpine
     container_name: webserver
     restart: unless-stopped
