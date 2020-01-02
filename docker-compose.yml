@@ -1,0 +1,62 @@
+version: '3'
+services:
+  front:
+    image: daerodriguezme/javel_front
+    container_name: front
+    restart: unless-stopped
+    networks: 
+      - frontend
+      - backend
+
+  back:
+    image: spenas/back_javel
+    container_name: back
+    restart: unless-stopped
+    depends_on:
+      — mongo
+    networks: 
+      - backend
+
+  mongo:
+    image: mongo
+    ports:
+      — "27017:27017"
+
+ webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx-conf:/etc/nginx/conf.d
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+    depends_on:
+      - front
+    networks:
+      - frontend
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - certbot-etc:/etc/letsencrypt
+      - certbot-var:/var/lib/letsencrypt
+      - web-root:/var/www/html
+    depends_on:
+      - webserver
+    command: certonly --webroot --webroot-path=/var/www/html --email aguadejavel@gmail.com --agree-tos --no-eff-email --staging -d aguadejavel.com  -d www.aguadejavel.com 
+
+
+volumes:
+  certbot-etc:
+  certbot-var:
+
+
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
