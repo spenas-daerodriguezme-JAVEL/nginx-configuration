@@ -13,7 +13,7 @@ services:
     container_name: back
     restart: unless-stopped
     depends_on:
-      — mongo
+      - mongo
     networks: 
       - backend
 
